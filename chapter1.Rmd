@@ -11,3 +11,11 @@ date()
 ```
 The text continues here.
 
+1 The course organised quite well for me so far as i have learned also reviewed several R skills, in particular linking the Rstaduio with git.
+
+2 I want to learn the basic statistic practice skill by R and i feel that the course fit my need pretty well.
+
+3 Basically, i am keen on learning/mastering intermediate levels of programming R and then i search the course resource by university course systems and this course was recommend by my colleagues and this time I finally have opportunities to register/enroll.
+
+4 Here is the link to my GitHub repository
+https://github.com/yuwenpang/IODS-project
