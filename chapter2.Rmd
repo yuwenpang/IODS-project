@@ -1,4 +1,4 @@
-# Insert chapter 2 Liner regression
+# Insert chapter 2 Linear regression
 
 *Describe the work you have done this week and summarize your learning.*
 
@@ -24,3 +24,17 @@ In this chapter I practiced how to explore the raw data and build a linear regre
 5 the improving processes would use diagnostic plots and the summary of models
 
 6 finally, we could get a improved and acceptable models, otherwise, the linear regression would not fit the case, we should look for nonlinear regressions, such as GAM.
+
+# Insert chapter 3 Logistic regression
+
+*Describe the work you have done this week and summarize your learning.*
+
+- Describe your work and results clearly. 
+- Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.
+- Assume the reader has no previous knowledge of your data or the more advanced methods you are using.
+
+```{r}
+date()
+```
+
+Here we go again...
