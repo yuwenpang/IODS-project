@@ -1,0 +1,34 @@
+---
+title: "chapter3.Rmd"
+author: "Yuwen Pang"
+date: "09/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Insert chapter 3 Logistic regression
+
+*Describe the work you have done this week and summarize your learning.*
+
+- Describe your work and results clearly. 
+- Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.
+- Assume the reader has no previous knowledge of your data or the more advanced methods you are using.
+
+```{r}
+date()
+```
+
+Here we go again...
+In this chapter I practiced how to explore the raw data and build a Logistic regression; I have learnt and practiced several new functions and systematically understood the logistic regression.
+
+1) for binary factor, i could use the logistic regression models, and these processed integrated glm()
+
+2) before build the model, the data exploration seems quite important, which could help us to find the most potential parameters. in this case, I identified the potential correlation among high_use, sex, failures and other varietals.
+
+3) the model validation: the perdition steps and calculated the probability, prediction, and then the error rate could be reports by user made function.
+the k-folder validation would be more robust than one-time average error rate, and it also could be used to compare different models.
+
+
