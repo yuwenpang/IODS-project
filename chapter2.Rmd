@@ -1,4 +1,4 @@
-# Insert chapter 2 Linear regression
+# chapter 2 Linear regression
 
 *Describe the work you have done this week and summarize your learning.*
 
@@ -12,29 +12,58 @@ date()
 
 Here we go again...
 In this chapter I practiced how to explore the raw data and build a linear regression;
+(Creat lists with a dash)
 
-1 load the data to local memory
+- 1 load the data to local memory
 
-2 explore the original data by selecting and filter
 
-3 before build the regression, the pairs could help we to identify the potential explanatory variables
+- 2 explore the original data by selecting and filter
+(With R markdown, you can insert R code chunks including table and plots:)
 
-4 the model could be conduce perfectly at first time, we could improve it generally
-
-5 the improving processes would use diagnostic plots and the summary of models
-
-6 finally, we could get a improved and acceptable models, otherwise, the linear regression would not fit the case, we should look for nonlinear regressions, such as GAM.
-
-# Insert chapter 3 Logistic regression
-
-*Describe the work you have done this week and summarize your learning.*
-
-- Describe your work and results clearly. 
-- Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.
-- Assume the reader has no previous knowledge of your data or the more advanced methods you are using.
-
-```{r}
-date()
+```{r ggplot, fig.width=10, fig.hight=4, message=FALSE}
+# quick summary of sudent2014 data
+# library(dplyr)
+library(ggplot2)
+library(GGally)
+# Load the student2014 data set
+stu14 <- read.csv('http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/learning2014.txt')
+# Summary the student2014
+summary(stu14)
+# Print the paris plots
+p <- ggpairs(stu14, mapping = aes(col = gender,alpha = 0.3), 
+         lower = list(combo = wrap("facethist", bins = 20)))
+p
 ```
 
-Here we go again...
+
+- 3 before build the regression, the pairs could help we to identify the potential explanatory variables
+```{r}
+# As the pair correlation showed,
+# the points as respond, the attitude, stra and surf as the explantory variables
+model <- lm(points ~ attitude + stra + surf , data = stu14)
+summary(model)
+```
+
+- 4 the model could be conduce perfectly at first time, we could improve it generally
+```{r}
+# Examine the model
+par(mfrow = c(2,2))
+plot(model, which = c(1,2,5))
+```
+
+- 5 the improving processes would use diagnostic plots and the summary of models
+```{r}
+# rebuild the fitted model
+stu14_2 <- stu14[-c(35,56,77,145),] #162*7
+model2 <- lm(points ~ attitude + stra , data = stu14_2)
+summary(model2)
+```
+
+- 6 finally, we could get a improved and acceptable models, otherwise, the linear regression would not fit the case, we should look for nonlinear regressions, such as GLM.
+```{r}
+# the r2 has been improved a bit in model2, from 0.21 to 0.29
+# the diagnostic plots for model 2
+par(mfrow = c(2,2))
+plot(model2, which = c(1,2,5))
+```
+
