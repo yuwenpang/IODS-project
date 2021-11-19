@@ -175,10 +175,9 @@ pre code {
 <div id="chapter-3-logistic-regression" class="section level1">
 <h1>chapter 3 Logistic regression</h1>
 <pre class="r"><code>date()</code></pre>
-<pre><code>## [1] &quot;Fri Nov 19 08:52:37 2021&quot;</code></pre>
-</div>
-<div id="the-diary-for-this-chapter-logstic-regression" class="section level1">
-<h1>The diary for this chapter, logstic regression</h1>
+<pre><code>## [1] &quot;Fri Nov 19 09:03:46 2021&quot;</code></pre>
+<div id="the-diary-for-this-chapter-logstic-regression" class="section level2">
+<h2>The diary for this chapter, logstic regression</h2>
 <p>In this chapter I practiced how to explore the raw data and build a Logistic regression; I have learnt and practiced several new functions and systematically understood the logistic regression.</p>
 <ul>
 <li><p>1 for binary factor, i could use the logistic regression models, and these processed integrated glm()</p></li>
@@ -186,13 +185,13 @@ pre code {
 <li><p>3 the model validation: the perdition steps and calculated the probability, prediction, and then the error rate could be reports by user made function. the k-folder validation would be more robust than one-time average error rate, and it also could be used to compare different models.</p></li>
 </ul>
 </div>
-<div id="below-is-the-analysis-section" class="section level1">
-<h1>Below is the analysis section</h1>
-<div id="section-2-analyzing-the-regression" class="section level2">
-<h2>Section 2 Analyzing the regression</h2>
+<div id="below-is-the-analysis-section" class="section level2">
+<h2>Below is the analysis section</h2>
+<div id="section-2-analyzing-the-regression" class="section level3">
+<h3>Section 2 Analyzing the regression</h3>
 </div>
-<div id="selecting-four-variables-and-establishing-the-regression" class="section level2">
-<h2>1 Selecting four variables and establishing the regression</h2>
+<div id="selecting-four-variables-and-establishing-the-regression" class="section level3">
+<h3>1 Selecting four variables and establishing the regression</h3>
 <pre class="r"><code># Library material
 library(dplyr)</code></pre>
 <pre><code>## Warning: package &#39;dplyr&#39; was built under R version 4.0.5</code></pre>
@@ -283,8 +282,8 @@ cbind(OR, CI)</code></pre>
 ## sexM        2.71951309 1.6839636172 4.4530085
 ## age         1.11460134 0.9076445049 1.3713869</code></pre>
 </div>
-<div id="comparing-the-models" class="section level2">
-<h2>2 Comparing the models</h2>
+<div id="comparing-the-models" class="section level3">
+<h3>2 Comparing the models</h3>
 <pre class="r"><code># modified glm models
 m2 &lt;- glm(high_use ~ failures + absences + age, data = stu.csv, family = &quot;binomial&quot;)
 summary(m2)</code></pre>
@@ -362,8 +361,8 @@ tab %&gt;% prop.table()</code></pre>
 ##    TRUE  0.20540541 0.09459459 0.30000000
 ##    Sum   0.88108108 0.11891892 1.00000000</code></pre>
 </div>
-<div id="bouns" class="section level2">
-<h2>3 Bouns</h2>
+<div id="bouns" class="section level3">
+<h3>3 Bouns</h3>
 <ul>
 <li><p>Perform 10-fold cross-validation on your model</p></li>
 <li><p>define a loss function (average prediction error)</p></li>
@@ -385,7 +384,7 @@ library(boot)
 cv &lt;- cv.glm(data = stu.csv, cost = loss_func, glmfit = m, K = 10)
 # average number of wrong predictions in the cross validation
 cv$delta[1] #0.2351351</code></pre>
-<pre><code>## [1] 0.2513514</code></pre>
+<pre><code>## [1] 0.227027</code></pre>
 <pre class="r"><code># the ten-fold error is 0.235, a bit larger than the average error rate, 0.229
 
 ### Super-Bonus
@@ -430,9 +429,10 @@ stu.csv &lt;- mutate(stu.csv, prediction2 = probability2 &gt; 0.5)
 # calculating the cv for model 2
 cv2 &lt;- cv.glm(data = stu.csv, cost = loss_func, glmfit = m2, K = 10)
 cv2$delta[1] # 0.2891892</code></pre>
-<pre><code>## [1] 0.2891892</code></pre>
+<pre><code>## [1] 0.2864865</code></pre>
 <pre class="r"><code># here i could see the model 2 has a higher cv error rate:0.289 than that of model 2:0.235
 # conclusion, the &#39;sex&#39; varible should be included in the logistic regression</code></pre>
+</div>
 </div>
 </div>
 
