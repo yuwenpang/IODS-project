@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 date()
 ```
 
-Here we go again...
+# The diary for this chapter, logstic regression
 In this chapter I practiced how to explore the raw data and build a Logistic regression; I have learnt and practiced several new functions and systematically understood the logistic regression.
 
 - 1 for binary factor, i could use the logistic regression models, and these processed integrated glm()
@@ -25,5 +25,129 @@ In this chapter I practiced how to explore the raw data and build a Logistic reg
 - 3 the model validation: the perdition steps and calculated the probability, prediction, and then the error rate could be reports by user made function.
 the k-folder validation would be more robust than one-time average error rate, and it also could be used to compare different models.
 
+# Below is the analysis section
+## Section 2 Analyzing the regression
+## 1 Selecting four variables and establishing the regression
+```{r, fig.width=10, fig.hight=4, message = FALSE}
+# Library material
+library(dplyr)
+library(ggplot2)
+library(GGally)
+
+# Set the working directory
+setwd("Z:/Course/Opendata science/IODS-project")
+
+# read previous step exported dataset, alc
+stu.csv <- read.csv('data/joint_stu.csv', head = TRUE)
+colnames(stu.csv)
+
+# choose 4 interesting variables
+p <- ggpairs(stu.csv[,c(2,3,4,7,13,28,29,31,36)], 
+             lower = list(combo = wrap("facethist", bins = 20)))
+p1 <- ggplot(data = stu.csv, aes(x = high_use)) + ylab("sex") +
+  geom_bar() + facet_wrap("sex")
+p2 <- ggplot(data = stu.csv, aes(x = high_use)) + ylab("age") +
+  geom_boxplot() + facet_wrap("age")
+p3 <- ggplot(data = stu.csv, aes(x = high_use)) + ylab("absences") +
+  geom_bar() + facet_wrap("absences")
+p4 <- ggplot(data = stu.csv, aes(x = high_use)) + ylab("failures") +
+  geom_bar() + facet_wrap("failures")
+
+# print plots
+# p;
+p1;p2;p3;p4
+
+# find the model with glm()
+m <- glm(high_use ~ failures + absences + sex + age, data = stu.csv, family = "binomial")
+summary(m)
+
+# compute odds ratios (OR)
+OR <- coef(m) %>% exp
+summary(OR)
+
+# compute confidence intervals (CI)
+CI <- confint(m) %>% exp
+summary(CI)
+
+# print out the odds ratios with their confidence intervals
+cbind(OR, CI)
+```
+
+
+## 2 Comparing the models
+```{r}
+# modified glm models
+m2 <- glm(high_use ~ failures + absences + age, data = stu.csv, family = "binomial")
+summary(m2)
+
+anova(m, m2, test="LRT")
+
+# explore the predictive power of you model
+# predict() the probability of high_use
+prob <- predict(m, type = "response")
+
+# add the predicted probabilities to 'stu.csv'
+stu.csv <- mutate(stu.csv, probability = prob)
+
+# use the probabilities to make a prediction of high_use
+stu.csv <- mutate(stu.csv, prediction = probability > 0.5)
+
+# see the last ten original classes, predicted probabilities, and class predictions
+select(stu.csv, failures, absences, sex, age, high_use, probability, prediction) %>% tail(10)
+
+# the 2x2 cross tabulation 
+# tabulate the target variable versus the predictions
+tab <- table(high_use = stu.csv$high_use, prediction = stu.csv$prediction)
+
+tab %>% prop.table()
+tab %>% prop.table() %>% addmargins()
+```
+
+## 3 Bouns
+- Perform 10-fold cross-validation on your model
+
+- define a loss function (average prediction error)
+```{r}
+# Perform 10-fold cross-validation on your model
+# define a loss function (average prediction error)
+loss_func <- function(class, prob) {
+  n_wrong <- abs(class - prob) > 0.5
+  mean(n_wrong)
+}
+
+# compute the average number of wrong predictions in the (training) data
+loss_func(class = stu.csv$high_use, prob = stu.csv$probability)
+# 0.2297297
+
+# K-fold cross-validation
+library(boot)
+cv <- cv.glm(data = stu.csv, cost = loss_func, glmfit = m, K = 10)
+# average number of wrong predictions in the cross validation
+cv$delta[1] #0.2351351
+# the ten-fold error is 0.235, a bit larger than the average error rate, 0.229
+
+### Super-Bonus
+# compare the performance of different logistic regression models
+# by performing cross-validation
+# build the prediction for models 2 in which without 'sex'
+m2 <- glm(high_use ~ failures + absences + age, data = stu.csv, family = "binomial")
+summary(m2)
+
+prob2 <- predict(m2, type = "response")
+
+# add the predicted probabilities to 'stu.csv'
+stu.csv <- mutate(stu.csv, probability2 = prob2)
+
+# use the probabilities to make a prediction of high_use
+stu.csv <- mutate(stu.csv, prediction2 = probability2 > 0.5)
+
+# calculating the cv for model 2
+cv2 <- cv.glm(data = stu.csv, cost = loss_func, glmfit = m2, K = 10)
+cv2$delta[1] # 0.2891892
+
+# here i could see the model 2 has a higher cv error rate:0.289 than that of model 2:0.235
+# conclusion, the 'sex' varible should be included in the logistic regression
+
+```
 
 
