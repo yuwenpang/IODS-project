@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 date()
 ```
 
-# The diary for this chapter, logstic regression
+## The diary for this chapter, logstic regression
 In this chapter I practiced how to explore the raw data and build a Logistic regression; I have learnt and practiced several new functions and systematically understood the logistic regression.
 
 - 1 for binary factor, i could use the logistic regression models, and these processed integrated glm()
@@ -25,9 +25,9 @@ In this chapter I practiced how to explore the raw data and build a Logistic reg
 - 3 the model validation: the perdition steps and calculated the probability, prediction, and then the error rate could be reports by user made function.
 the k-folder validation would be more robust than one-time average error rate, and it also could be used to compare different models.
 
-# Below is the analysis section
-## Section 2 Analyzing the regression
-## 1 Selecting four variables and establishing the regression
+## Below is the analysis section
+### Section 2 Analyzing the regression
+### 1 Selecting four variables and establishing the regression
 ```{r, fig.width=10, fig.hight=4, message = FALSE}
 # Library material
 library(dplyr)
@@ -74,7 +74,7 @@ cbind(OR, CI)
 ```
 
 
-## 2 Comparing the models
+### 2 Comparing the models
 ```{r}
 # modified glm models
 m2 <- glm(high_use ~ failures + absences + age, data = stu.csv, family = "binomial")
@@ -103,7 +103,7 @@ tab %>% prop.table()
 tab %>% prop.table() %>% addmargins()
 ```
 
-## 3 Bouns
+### 3 Bouns
 - Perform 10-fold cross-validation on your model
 
 - define a loss function (average prediction error)
