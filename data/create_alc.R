@@ -6,7 +6,7 @@
 # Date: 09-11-2021
 # Subjects: Logical regression
 
-# Load the library and tha data
+# Load the library and the data
 library(dplyr)
 library(ggplot2)
 library(GGally)
