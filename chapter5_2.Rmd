@@ -1,0 +1,134 @@
+---
+title: "chapter5"
+author: "Yuwen Pang"
+date: "26/11/2021"
+output: html_document
+---
+
+# Chapter5:Dimensionality reduction techniques
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Analysis section
+
+## 1 Show a graphical overview of the data and show summaries of the variables in the data
+```{r, echo=FALSE, message = FALSE}
+library(GGally)
+library(corrplot)
+# 1. summary of the new human dataset
+human_n <- read.csv('data/human_new.csv')
+# attach the row names
+row.names(human_n) <- human_n[,1]
+human_n <- human_n[,-1]
+names(human_n)
+
+head(human_n,n=6)
+str(human_n)
+dim(human_n)
+
+# 2. visualization by ggally
+ggpairs(human_n)
+summary(cor(human_n))
+cor(human_n) %>% corrplot
+
+```
+
+- Based on the correlation coefficient (figs and plots), I could find that
+(1) Eduction relevant parameters, Edu2.FM, Edu.Exp, Life.Exp are high positively connected with Mat.Mor and Ado,Birth
+(2) In particular, the association between Edu.Exp, Life.Exp and Mat.Mor and Ado,Birth seem over 0.6
+(3) Besides above mentioned variables, others mostly show negative association, a longer Life.Exp is seemd to result in a shorter Edu.Exp.
+
+## 2&3 Perform principal component analysis (PCA)
+and Draw a biplot displaying the observations
+- After parcticing, i found that scaling the original dataset is quite critical, otherwise the PCA results would not appropriated as we assumed.
+- Therefore, here I implemented the PCA with either original human dataset or scaled one.
+- the biplot of PCA based on non-scalded data, has not show visible relations between parameter and contries, resulting in most countries gathers and haven't exhibited gathering boundaries;
+- while for the scaled data, we can find how these 9 variables contributions among countries
+```{r, echo=FALSE, message = FALSE}
+# 1 PCA carried out with origianl human dataset
+# perform principal component analysis (with the SVD method)
+pca_human <- prcomp(human_n)
+s1 <- summary(pca_human)
+
+# draw a biplot of the principal component representation and the original variables
+biplot(pca_human, choices = 1:2)
+
+# 2 PCA implemented by scaled human data
+human_st <- scale(human_n)
+pca_human_st <- prcomp(human_st)
+s2 <- summary(pca_human_st)
+biplot(pca_human_st, choices = 1:2)
+
+# rounded percentages of variance captured by each PC
+pca_pr1 <- round(100*s1$importance[2,], digits = 1) 
+pca_pr2 <- round(100*s2$importance[2,], digits = 1)
+
+# create object pc_lab to be used as axis labels
+pc_lab1 <- paste0(names(pca_pr1), " (", pca_pr1, "%)")
+pc_lab2 <- paste0(names(pca_pr2), " (", pca_pr2, "%)")
+
+# draw a biplot
+biplot(pca_human, cex = c(0.8, 1), col = c("black", "red"), xlab = pc_lab1[1], ylab = pc_lab1[2])
+
+biplot(pca_human_st, cex = c(0.8, 1), col = c("black", "blue"), xlab = pc_lab2[1], ylab = pc_lab2[2])
+
+```
+
+## 4 Give your personal interpretations
+- From the view of pca summary, Labo.FM and Parli.F had high component values in PCA2; and the other variables present high weights in PCA1.
+- By conducting the PCA, we could reduce the dimensions of variables (nine in this case) to the first two PCAs.
+- in PCA1 the ONLY the PC1 was explained the 0.99 variance, indicating that the variable the distribution have not been appropriated separated or presented.
+- on the contrary, in PCA2, the first two PCA components explained 0.69 variance, which seems more reasonable and successfully reduced variable dimensions
+
+## 5.1 Load the tea dataset from the package Factominer
+- Multiple Correspondence Analysis, MCA
+## 5.2 implemented the mca and plot the resutls
+From the plot, (1) i could see the unpacked and tea shop had high components
+(2) the variables: 'where' and 'how' presented high representation weighs.
+
+```{r, echo=FALSE, message = FALSE}
+# Load the library
+library(FactoMineR)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+# explore the tea dataset
+# look at structure and dimension, 36 variables!
+data(tea)
+names(tea)
+head(tea, n=6)
+dim(tea) #300*36
+str(tea)
+
+# modify the tea
+# column names to keep in the dataset
+keep_columns <- c("Tea", "How", "how", "sugar", "where")
+
+# select the 'keep_columns' to create a new dataset
+tea_time <- dplyr::select(tea, keep_columns) #300*6
+str(tea_time)
+
+# implement the mac
+tea.mca.1 <- MCA(tea_time, graph = FALSE, method = 'indicator')
+summary(tea.mca.1, nbelements = 3)
+
+# plot the mca results
+plot.MCA(tea.mca.1)
+# mca implemented with printing graph
+tea.mca.2 <- MCA(tea_time, graph = TRUE, method = 'indicator')
+
+# additional mca graphs
+library(factoextra)
+fviz_mca_biplot(tea.mca.1, 
+                repel = TRUE, # Avoid text overlapping (slow if many point)
+                ggtheme = theme_minimal())
+fviz_mca_var(tea.mca.1, choice = "mca.cor", 
+             repel = TRUE, # Avoid text overlapping (slow)
+             ggtheme = theme_minimal())
+fviz_mca_var(tea.mca.1, 
+             repel = TRUE, # Avoid text overlapping (slow)
+             ggtheme = theme_minimal())
+
+```
