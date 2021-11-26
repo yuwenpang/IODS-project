@@ -1,0 +1,16 @@
+---
+title: "chapter6"
+author: "Yuwen Pang"
+date: "23/11/2021"
+output: html_document
+---
+
+# Chapter 6 Analysis of longitudinal data
+```{r}
+options(knitr.duplicate.label = "allow")
+```
+
+```{r}
+date()
+```
+
