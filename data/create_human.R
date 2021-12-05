@@ -100,7 +100,7 @@ summary(human)
 # Since there are commas(,) in most character records, 
 # we cannot directly use as.numberic to convert chr to int
 library(stringr)
-summary(str_detect(human$GNI, ",")) # to detect how many commas exsites
+summary(str_detect(human$GNI, ",")) # to detect how many commas excites
 # summary shows 189 records contain commas
 #    Mode   FALSE    TRUE 
 # logical       6     189 
