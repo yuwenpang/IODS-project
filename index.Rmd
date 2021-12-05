@@ -46,9 +46,10 @@ options(knitr.duplicate.label = "allow")
 ```
 
 ***
-```{r}
-
+```{r child= "chapter6.Rmd"}
+# This will include Chapter 6 (that is updated in its own file) in the document.
 ```
+```
+Congratulations! Now All chapters have been added!
 
-(more chapters to be added!)
 
