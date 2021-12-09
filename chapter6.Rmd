@@ -46,7 +46,8 @@ dim(bprsl) #360*5
 Interpretations:
 -1 in ratsl data, the weight ~ Time + Group + ID
 
--2 Base on graphs, we could see :(1) wight increased with time in all groups
+-2 Base on graphs, we could see:
+(1) wight increased with time in all groups
 
 (2)the weight trends clearly separated in three groups:in which group1 had quite low values, and group 2 and 3 shard similar wight regions, from 400-550.
 
@@ -147,7 +148,7 @@ dim(ratss.gb2) #16*3
 glimpse(ratss.gb2)
 
 # Draw a boxplot of the mean versus group
-ggplot(ratss.gb2, aes(x = Group, y = mean)) +
+ggplot(ratss.gb2, aes(x = Group, y = mean, color = Group)) +
   geom_boxplot() +
   stat_summary(fun = "mean", geom = "point", shape=23, size=4, fill = "white") +
   scale_y_continuous(name = "mean(weight)") +
@@ -155,21 +156,23 @@ ggplot(ratss.gb2, aes(x = Group, y = mean)) +
 
 # Remove the outliers
 ratss.gb3 <- ratss.gb2 %>%
-  filter(mean < 550)
+  filter((Group==1 & mean > 250)|(Group==2 & mean < 550)| (Group==3 & mean > 500))
 dim(ratss.gb3) #15*3
 dim(ratss.gb2) #16*3
 
 # Draw the new boxplot of the mean versus group
-ggplot(ratss.gb3, aes(x = Group, y = mean)) +
+ggplot(ratss.gb3, aes(x = Group, y = mean, color = Group)) +
   geom_boxplot() +
   stat_summary(fun = "mean", geom = "point", shape=23, size=4, fill = "white") +
   scale_y_continuous(name = "mean(weight)") +
+  ggtitle("the outlier filtered ratss") +
   theme_bw()
 
 ```
 
 ## 2.4 Summary Measure Analysis- fit the model and implied the t-test
 -1 the linear model,fit1,  reported that the group variable is significant
+
 -2 the fit2 revealed that time and group both significantly impact weight
 ```{r message=FALSE, warning=FALSE}
 # Fit the linear model with the mean as the response 
@@ -215,11 +218,21 @@ bprsl$treatment <- as.factor(bprsl$treatment)
 bprsl$subject <- as.factor(bprsl$subject)
 
 # Draw the plot of new long data form
+ggplot(bprsl, aes(x = week, y = bprs, group = subject)) +
+  geom_text(aes(label = treatment, color = treatment)) +
+  # facet_grid(. ~ treatment, labeller = label_both) +
+  scale_x_continuous(name = "week", breaks = seq(0, 8, 1)) +
+  scale_y_continuous(name = "bprs", limits = c(min(bprsl$bprs), max(bprsl$bprs))) +
+  ggtitle("the orginal plots of bprsl") +
+  theme_bw()
+
 ggplot(bprsl, aes(x = week, y = bprs, linetype = subject)) +
-  geom_line(aes(group = subject)) +
+  geom_line() +
   scale_linetype_manual(values = rep(1:10, times=4)) +
   facet_grid(. ~ treatment, labeller = label_both) +
-  scale_y_continuous(limits = c(min(bprsl$bprs), max(bprsl$bprs))) +
+  scale_x_continuous(name = "week", breaks = seq(0, 8, 1)) +
+  scale_y_continuous(name = "bprs", limits = c(min(bprsl$bprs), max(bprsl$bprs))) +
+  ggtitle("the orginal line plots of bprsl") +
   theme_bw()
 
 ```
@@ -283,7 +296,7 @@ anova(bprsl_ref1, bprsl_ref)
 -1 based on the t-test, anova, the (week|subject) model was be accepted
 
 -2 calculated the fitted values and draw the predicted plot
-```{r fig.height=6, fig.width=12, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r message=FALSE, warning=FALSE}
 # Create a vector of the fitted values
 Fitted <- fitted(bprsl_ref1)
 
