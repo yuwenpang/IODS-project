@@ -72,7 +72,8 @@ dim(ratsl.gb) #176*6
 names(ratsl)
 
 # Plot again with the standardised weight
-ggplot(ratsl.gb, aes(x = Time, y = stdweight, linetype = ID)) +
+str(ratsl.gb)
+ggplot(ratsl.gb, aes(x = Time, y = stdweight, linetype = as.factor(ID))) +
   scale_linetype_manual(values = rep(1:10, times=4)) +
   geom_line(aes(group = ID)) +
   facet_grid(. ~ Group, labeller = label_both) +
@@ -96,7 +97,7 @@ glimpse(ratss.gb)
 # Plot the mean profiles
 names(ratss.gb) #"Group" "Time"  "mean"  "se"
 
-ggplot(ratss.gb, aes(x = Time, y = mean, color = Group)) +
+ggplot(ratss.gb, aes(x = Time, y = mean, color = as.factor(Group))) +
   geom_point(size=0.8) +
   geom_line(aes(group = Group)) +
   geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width=0.3) +
@@ -115,7 +116,7 @@ dim(ratss.gb2) #16*3
 glimpse(ratss.gb2)
 
 # Draw a boxplot of the mean versus group
-ggplot(ratss.gb2, aes(x = Group, y = mean)) +
+ggplot(ratss.gb2, aes(x = as.factor(Group), y = mean, color = as.factor(Group))) +
   geom_boxplot() +
   stat_summary(fun = "mean", geom = "point", shape=23, size=4, fill = "white") +
   scale_y_continuous(name = "mean(weight)") +
@@ -123,9 +124,10 @@ ggplot(ratss.gb2, aes(x = Group, y = mean)) +
 
 # Remove the outliers
 ratss.gb3 <- ratss.gb2 %>%
-  filter(mean < 550)
+  filter((Group==1 & mean > 250)|(Group==2 & mean < 550)| (Group==3 & mean > 500))
 dim(ratss.gb3) #15*3
 dim(ratss.gb2) #16*3
+
 
 # Draw a boxplot of the mean versus ID
 # ggplot(ratss.gb2, aes(x = ID, y = mean)) +
@@ -135,10 +137,11 @@ dim(ratss.gb2) #16*3
 #   theme_bw()
 
 # Draw the new boxplot of the mean versus group
-ggplot(ratss.gb3, aes(x = Group, y = mean)) +
+ggplot(ratss.gb3, aes(x = as.factor(Group), y = mean, color = as.factor(Group))) +
   geom_boxplot() +
   stat_summary(fun = "mean", geom = "point", shape=23, size=4, fill = "white") +
   scale_y_continuous(name = "mean(weight)") +
+  ggtitle("the outlier filtered ratss") +
   theme_bw()
 
 
@@ -196,13 +199,22 @@ bprsl$subject <- as.factor(bprsl$subject)
 
 
 # Draw the plot
-ggplot(bprsl, aes(x = week, y = bprs, linetype = subject)) +
-  geom_line(aes(group = subject)) +
-  scale_linetype_manual(values = rep(1:10, times=4)) +
-  facet_grid(. ~ treatment, labeller = label_both) +
-  scale_y_continuous(limits = c(min(bprsl$bprs), max(bprsl$bprs))) +
+ggplot(bprsl, aes(x = week, y = bprs, group = subject)) +
+  geom_text(aes(label = treatment, color = treatment)) +
+  # facet_grid(. ~ treatment, labeller = label_both) +
+  scale_x_continuous(name = "week", breaks = seq(0, 8, 1)) +
+  scale_y_continuous(name = "bprs", limits = c(min(bprsl$bprs), max(bprsl$bprs))) +
+  ggtitle("the orginal text plots of bprsl") +
   theme_bw()
 
+ggplot(bprsl, aes(x = week, y = bprs, linetype = subject)) +
+  geom_line() +
+  scale_linetype_manual(values = rep(1:10, times=4)) +
+  facet_grid(. ~ treatment, labeller = label_both) +
+  scale_x_continuous(name = "week", breaks = seq(0, 8, 1)) +
+  scale_y_continuous(name = "bprs", limits = c(min(bprsl$bprs), max(bprsl$bprs))) +
+  ggtitle("the orginal line plots of bprsl") +
+  theme_bw()
 
 # Exploring how bprs varied with treatment and time
 # Number of subject
